@@ -1,20 +1,18 @@
-import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
-import { getDatabase } from 'firebase/database';
+import { onValue, ref, database } from './connection';
 
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_API_KEY,
-  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-  databaseURL: process.env.REACT_APP_DATABASE_URL,
-  projectId: process.env.REACT_APP_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_APP_ID,
-  measurementId: process.env.REACT_APP_MEASUREMENT_ID
-};
+export interface Products {
+  firstUpdater: string;
+  lastUpdater: string;
+  name: string;
+  length: number;
+  hasBought: boolean;
+}
 
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const database = getDatabase(app);
+export async function getAllProducts() {
+  return onValue(ref(database, 'products'), (snapshot) => {
+    if (!snapshot.exists()) return null;
 
-export { app, analytics, database };
+    const rawValue = snapshot.val() as Record<string, Products>;
+    return Object.entries(rawValue).map((entry) => entry[1]);
+  });
+}
