@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react';
-import { getAllProducts, removeProduct, Products } from './server';
-import { uuid } from './utils/uuid';
+import { useNavigate } from 'react-router-dom';
+import { useAvatar } from './hooks/useAvatar';
+import {
+  getAllProducts,
+  removeProduct,
+  createProduct,
+  Product,
+  updateProduct,
+} from './server';
 
 function App() {
-  const [products, setProducts] = useState<Products[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const navigate = useNavigate();
+  const { hasAvatar } = useAvatar();
 
-  function handleDeleteProduct(productId: string) {
-    removeProduct(productId);
+  if (!hasAvatar) {
+    return navigate('/choose-avatar');
   }
 
   useEffect(() => {
@@ -17,19 +26,21 @@ function App() {
     fetchProducts();
   }, []);
 
+  function handleDeleteProduct(productId: string) {
+    removeProduct(productId);
+  }
+
+  function handleCreateProduct(product: Product) {
+    createProduct(product);
+  }
+
+  function handleUpdateProduct(product: Product) {
+    updateProduct(product);
+  }
+
   return (
     <div className="App">
-      <h1 className="text-3xl text-red-500 underline">Shopping List!</h1>
-
-      <div>
-        {products.map((product) => (
-          <p key={product.name}>{product.name}</p>
-        ))}
-      </div>
-
-      <button onClick={() => handleDeleteProduct('-NITZLzS2t3tlyuydiQO')}>
-        REMOVER
-      </button>
+      <header></header>
     </div>
   );
 }
