@@ -1,20 +1,21 @@
-import { onValue, ref, database, remove } from './connection';
+import { onValue, ref, database, remove, set } from './connection';
+import { uuid } from '../utils/uuid';
 
-export interface Products {
-  firstUpdater: string;
-  lastUpdater: string;
+export interface Product {
+  createdBy: string;
+  updatedBy: string;
   name: string;
   length: number;
   hasBought: boolean;
 }
 
 export async function getAllProducts(
-  set: React.Dispatch<React.SetStateAction<Products[]>>
+  set: React.Dispatch<React.SetStateAction<Product[]>>
 ) {
-  return onValue(ref(database, 'products'), (snapshot) => {
-    if (!snapshot.exists()) return null;
+  return onValue(ref(database, 'products'), (product) => {
+    if (!product.exists()) return null;
 
-    const rawValue = snapshot.val() as Record<string, Products>;
+    const rawValue = product.val() as Record<string, Product>;
     const value = Object.entries(rawValue).map((entry) => entry[1]);
 
     return set(value);
@@ -25,7 +26,15 @@ export async function removeProduct(productId: string): Promise<void> {
   remove(ref(database, `products/${productId}`));
 }
 
-// CRIAR PRODUTO
+export async function createProduct(product: Product) {
+  try {
+    const productId = uuid();
+
+    set(ref(database, `products/${productId}`), product);
+  } catch (e) { 
+    console.error(e);
+  }
+}
 
 // ATUALIZAR QUANTIDADE
 
