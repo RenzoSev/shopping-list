@@ -8,6 +8,7 @@ export interface Product {
   name: string;
   length: number;
   hasBought: boolean;
+  description: string;
 }
 
 export async function getAllProducts(
