@@ -24,3 +24,9 @@ export async function getAllProducts(
 export async function removeProduct(productId: string): Promise<void> {
   remove(ref(database, `products/${productId}`));
 }
+
+// CRIAR PRODUTO
+
+// ATUALIZAR QUANTIDADE
+
+// RISCAR PRODUTO COMO FEITO
