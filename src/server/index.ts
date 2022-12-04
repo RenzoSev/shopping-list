@@ -1,7 +1,8 @@
-import { onValue, ref, database, remove, set } from './connection';
+import { onValue, ref, database, remove, update, set } from './connection';
 import { uuid } from '../utils/uuid';
 
 export interface Product {
+  id: string;
   createdBy: string;
   updatedBy: string;
   name: string;
@@ -16,7 +17,10 @@ export async function getAllProducts(
     if (!product.exists()) return null;
 
     const rawValue = product.val() as Record<string, Product>;
-    const value = Object.entries(rawValue).map((entry) => entry[1]);
+    const value = Object.entries(rawValue).map((entry) => ({
+      ...entry[1],
+      id: entry[0],
+    }));
 
     return set(value);
   });
@@ -36,6 +40,10 @@ export async function createProduct(product: Product) {
   }
 }
 
-// ATUALIZAR QUANTIDADE
-
-// RISCAR PRODUTO COMO FEITO
+export async function updateProduct(product: Product) {
+  try {
+    update(ref(database, `products/${product.id}`), product);
+  } catch (e) { 
+    console.error(e);
+  }
+}
