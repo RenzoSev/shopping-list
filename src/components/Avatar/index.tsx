@@ -1,8 +1,10 @@
+import { Component } from '../../types/Component';
+
 interface IAvatar {
   src: string;
 }
 
-export const Avatar: React.FC<IAvatar> = (props) => {
+export const Avatar: Component<IAvatar> = (props) => {
   const { src } = props;
 
   return (

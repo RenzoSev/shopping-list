@@ -1,9 +1,11 @@
+import { Component } from '../../types/Component';
+
 interface ISelect {
   title: string;
   options: string[];
 }
 
-export const Select: React.FC<ISelect> = (props) => {
+export const Select: Component<ISelect> = (props) => {
   const { title, options } = props;
 
   return (
