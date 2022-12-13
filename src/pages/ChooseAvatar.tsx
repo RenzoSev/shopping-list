@@ -1,59 +1,107 @@
-import * as Select from '@radix-ui/react-select';
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
-import './index.css';
+import { useEffect, useState } from 'react';
+import { Avatar } from '../components/Avatar';
+import { Button } from '../components/Button';
+import { TextInput } from '../components/TextInput';
+import { Toast, toastError, toastSuccess } from '../components/Toastify';
+import { getAvatar } from '../server/avatar';
+import { setAvatarInStorage } from '../utils/setters';
+import { useNavigate } from 'react-router-dom';
+import { getAvatarFromStorage } from '../utils/getters';
+import 'react-toastify/dist/ReactToastify.css';
 
-export function ChooseAvatar() {  
+export function ChooseAvatar() {
+  const [avatarCode, setAvatarCode] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInvalidAvatarCode, setIsInvalidAvatarCode] = useState(false);
+  const [hasSuccess, setHasSuccess] = useState(false);
+  const navigate = useNavigate();
+
+  const buttonType = getButtonType();
+
+  const avatar = getAvatarFromStorage();
+
+  function getButtonType() {
+    if (!avatarCode) return 'disabled';
+    if (isLoading) return 'loading';
+    if (isInvalidAvatarCode) return 'error';
+    if (hasSuccess) return 'success';
+
+    return 'primary';
+  }
+
+  function handleChangeAvatarCode(e: React.ChangeEvent<HTMLInputElement>) {
+    setAvatarCode(e.target.value);
+  }
+
+  function handleSaveAvatarCode() {
+    setIsLoading(true);
+  }
+
+  function getButtonText() {
+    if (buttonType === 'loading') return 'Carregando';
+    if (buttonType === 'error') return 'ERRO';
+    if (buttonType === 'success') return 'Redirecionando';
+
+    return 'Salvar';
+  }
+
+  function successRedirect() {
+    setTimeout(() => {
+      navigate('/');
+    }, 5000);
+  }
+
+  async function saveAvatarCode() {
+    const avatar = await getAvatar(avatarCode);
+
+    if (!avatar) {
+      setIsInvalidAvatarCode(true);
+      setIsLoading(false);
+      setAvatarCode('');
+      toastError('Código inválido 😭');
+      return;
+    }
+
+    setHasSuccess(true);
+    setAvatarInStorage(avatar);
+    setIsLoading(false);
+    toastSuccess(`Boas vindas, ${avatar.name}! 🪄`);
+    successRedirect();
+  }
+
+  useEffect(() => {
+    if (!isLoading) return;
+
+    saveAvatarCode();
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (isInvalidAvatarCode) setIsInvalidAvatarCode(false);
+  }, [avatarCode]);
+
   return (
-    <section>
-      <h1 className="">Choose Avatar</h1>
+    <>
+      <Toast />
 
-      {/* AVATAR RESULTADO DO SELECT DAS OPCOES DE NOME */}
+      <section className="py-6 w-full h-screen flex flex-col justify-between items-center">
+        <h1 className="text-4xl font-bold">Avatar</h1>
 
-      {/* SELECT DAS OPCOES DE NOME */}
-      <Select.Root>
-        <Select.Trigger className="SelectTrigger" aria-label='Avatar'>
-          <Select.Value placeholder='Escolha Alguem' />
+        <div className="w-full flex flex-col justify-center items-center gap-16">
+          <Avatar src={avatar?.img || 'https://placeimg.com/192/192/people'} />
 
-          <Select.Icon className="SelectIcon">
-            <ChevronDownIcon />
-          </Select.Icon>
-        </Select.Trigger>
+          <TextInput
+            placeholder="Escolha seu avatar"
+            value={avatarCode}
+            handleTextInput={handleChangeAvatarCode}
+          />
+        </div>
 
-        <Select.Portal>
-          <Select.Content className="SelectContent">
-            <Select.ScrollUpButton className="SelectScrollButton">
-              <ChevronUpIcon />
-            </Select.ScrollUpButton>
-
-            <Select.Viewport className="SelectViewport">
-              <Select.Group>
-                <SelectItem value='Renzão' />
-
-                <SelectItem value='Enzo' />
-              </Select.Group>
-            </Select.Viewport>
-
-            <Select.ScrollDownButton className="SelectScrollButton">
-              <ChevronDownIcon />
-            </Select.ScrollDownButton>
-          </Select.Content>
-        </Select.Portal>
-      </Select.Root>
-
-      {/* BOTAO DE CONFIRMAR AVATAR */}
-    </section>
+        <Button
+          text={getButtonText()}
+          handleClick={handleSaveAvatarCode}
+          type={buttonType}
+        />
+      </section>
+    </>
   );
 }
-
-const SelectItem = ({ value }: { value: string }) => {
-  return (
-    <Select.Item className='SelectItem' value={value.toLowerCase()}>
-      <Select.ItemText>{value}</Select.ItemText>
-      <Select.ItemIndicator className="SelectItemIndicator">
-        <CheckIcon />
-      </Select.ItemIndicator>
-    </Select.Item>
-  );
-};
-
-SelectItem.displayName = 'SelectItem';
