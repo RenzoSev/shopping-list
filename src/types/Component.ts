@@ -1,1 +1,1 @@
-export type Component<T> = React.FC<React.PropsWithChildren<T>>;
+export type Component<T = any> = React.FC<React.PropsWithChildren<T>>;
