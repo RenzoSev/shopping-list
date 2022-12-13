@@ -1,9 +1,9 @@
 import { Component } from '../../types/Component';
 
 interface Button {
-  text: string;
-  className?: string;
   handleClick: () => void;
+  text?: string;
+  className?: string;
   type?: keyof typeof types;
 }
 
@@ -13,10 +13,12 @@ const types = {
   error: 'btn btn-error',
   success: 'btn btn-success loading',
   disabled: 'btn-disabled btn btn-active btn-secondary',
+  circle: 'btn btn-circle',
+  circleSuccess: 'btn btn-success btn-circle',
 };
 
 export const Button: Component<Button> = (props) => {
-  const { text, className, type: propsType, handleClick } = props;
+  const { text, className, type: propsType, handleClick, children } = props;
 
   const type = propsType || 'primary';
 
@@ -26,9 +28,9 @@ export const Button: Component<Button> = (props) => {
     <button
       disabled={type === 'disabled'}
       onClick={handleClick}
-      className={`${defaultClassName} ${className} w-48`}
+      className={`${defaultClassName} ${className}`}
     >
-      {text}
+      {text || children}
     </button>
   );
 };
