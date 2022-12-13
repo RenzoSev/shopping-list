@@ -4,9 +4,9 @@ import { Button } from '../components/Button';
 import { TextInput } from '../components/TextInput';
 import { Toast, toastError, toastSuccess } from '../components/Toastify';
 import { getAvatar } from '../server/avatar';
-import { setAvatarInStorage } from '../utils/setters';
 import { useNavigate } from 'react-router-dom';
-import { getAvatarFromStorage } from '../utils/getters';
+import { useAvatar } from '../hooks/useAvatar';
+import { useWillMountRedirect } from '../hooks/useWillMountRedirect';
 import 'react-toastify/dist/ReactToastify.css';
 
 export function ChooseAvatar() {
@@ -14,11 +14,10 @@ export function ChooseAvatar() {
   const [isLoading, setIsLoading] = useState(false);
   const [isInvalidAvatarCode, setIsInvalidAvatarCode] = useState(false);
   const [hasSuccess, setHasSuccess] = useState(false);
+  const { hasAvatar, avatar, setAvatar } = useAvatar();
   const navigate = useNavigate();
 
   const buttonType = getButtonType();
-
-  const avatar = getAvatarFromStorage();
 
   function getButtonType() {
     if (!avatarCode) return 'disabled';
@@ -63,11 +62,13 @@ export function ChooseAvatar() {
     }
 
     setHasSuccess(true);
-    setAvatarInStorage(avatar);
+    setAvatar(avatar);
     setIsLoading(false);
     toastSuccess(`Boas vindas, ${avatar.name}! 🪄`);
     successRedirect();
   }
+
+  useWillMountRedirect({ url: '/', condition: hasAvatar });
 
   useEffect(() => {
     if (!isLoading) return;
@@ -87,10 +88,13 @@ export function ChooseAvatar() {
         <h1 className="text-4xl font-bold">Avatar</h1>
 
         <div className="w-full flex flex-col justify-center items-center gap-16">
-          <Avatar src={avatar?.img || 'https://placeimg.com/192/192/people'} />
+          <Avatar
+            src={avatar?.img || 'https://placeimg.com/192/192/people'}
+            className="w-24"
+          />
 
           <TextInput
-            placeholder="Escolha seu avatar"
+            placeholder="Digite seu código"
             value={avatarCode}
             handleTextInput={handleChangeAvatarCode}
           />
@@ -100,6 +104,7 @@ export function ChooseAvatar() {
           text={getButtonText()}
           handleClick={handleSaveAvatarCode}
           type={buttonType}
+          className="w-48"
         />
       </section>
     </>
