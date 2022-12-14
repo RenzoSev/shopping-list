@@ -20,8 +20,15 @@ export function ChooseAvatar() {
   const buttonType = getButtonType();
 
   function getButtonType() {
+    if (isInvalidAvatarCode) return 'error';
     if (!avatarCode) return 'disabled';
     if (isLoading) return 'loading';
+    if (hasSuccess) return 'successLoading';
+
+    return 'primary';
+  }
+
+  function getInputTextType() {
     if (isInvalidAvatarCode) return 'error';
     if (hasSuccess) return 'success';
 
@@ -38,8 +45,8 @@ export function ChooseAvatar() {
 
   function getButtonText() {
     if (buttonType === 'loading') return 'Carregando';
-    if (buttonType === 'error') return 'ERRO';
-    if (buttonType === 'success') return 'Redirecionando';
+    if (buttonType === 'error') return 'CÓDIGO INVÁLIDO';
+    if (buttonType === 'successLoading') return 'Redirecionando';
 
     return 'Salvar';
   }
@@ -56,7 +63,6 @@ export function ChooseAvatar() {
     if (!avatar) {
       setIsInvalidAvatarCode(true);
       setIsLoading(false);
-      setAvatarCode('');
       toastError('Código inválido 😭');
       return;
     }
@@ -89,7 +95,10 @@ export function ChooseAvatar() {
 
         <div className="w-full flex flex-col justify-center items-center gap-16">
           <Avatar
-            src={avatar?.img || 'https://placeimg.com/192/192/people'}
+            src={
+              avatar?.img ||
+              'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png'
+            }
             className="w-24"
           />
 
@@ -97,6 +106,7 @@ export function ChooseAvatar() {
             placeholder="Digite seu código"
             value={avatarCode}
             handleTextInput={handleChangeAvatarCode}
+            type={getInputTextType()}
           />
         </div>
 
@@ -104,7 +114,7 @@ export function ChooseAvatar() {
           text={getButtonText()}
           handleClick={handleSaveAvatarCode}
           type={buttonType}
-          className="w-48"
+          className="w-52"
         />
       </section>
     </>
