@@ -1,5 +1,4 @@
 import { onValue, ref, database, remove, update, set } from './connection';
-import { uuid } from '../utils/uuid';
 
 export interface Product {
   id: string;
@@ -7,6 +6,7 @@ export interface Product {
   updatedBy: string;
   name: string;
   length: number;
+  category: string;
   hasBought: boolean;
   description: string;
 }
@@ -33,9 +33,7 @@ export async function removeProduct(productId: string): Promise<void> {
 
 export async function createProduct(product: Product) {
   try {
-    const productId = uuid();
-
-    set(ref(database, `products/${productId}`), product);
+    set(ref(database, `products/${product.id}`), product);
   } catch (e) { 
     console.error(e);
   }
