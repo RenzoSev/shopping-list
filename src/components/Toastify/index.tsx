@@ -27,7 +27,7 @@ export function toastError(text: string) {
   });
 }
 
-export const Toast: Component<any> = () => {
+export const Toast: Component = () => {
   return (
     <ToastContainer
       position="top-right"
