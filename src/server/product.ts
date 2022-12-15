@@ -8,7 +8,13 @@ export interface Product {
   length: number;
   category: string;
   hasBought: boolean;
-  description: string;
+  createdBySrc: string;
+}
+
+export enum ProductCategory {
+  VEG = 'veg',
+  CARNE = 'carne',
+  FRUTA = 'fruta',
 }
 
 export async function getAllProducts(
@@ -34,7 +40,7 @@ export async function removeProduct(productId: string): Promise<void> {
 export async function createProduct(product: Product) {
   try {
     set(ref(database, `products/${product.id}`), product);
-  } catch (e) { 
+  } catch (e) {
     console.error(e);
   }
 }
@@ -42,7 +48,7 @@ export async function createProduct(product: Product) {
 export async function updateProduct(product: Product) {
   try {
     update(ref(database, `products/${product.id}`), product);
-  } catch (e) { 
+  } catch (e) {
     console.error(e);
   }
 }
