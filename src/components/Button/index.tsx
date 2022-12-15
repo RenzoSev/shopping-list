@@ -16,6 +16,7 @@ const types = {
   disabled: 'btn-disabled btn btn-active btn-secondary',
   circle: 'btn btn-circle',
   circleSuccess: 'btn btn-success btn-circle',
+  circleError: 'btn btn-error btn-circle',
 };
 
 export const Button: Component<Button> = (props) => {
