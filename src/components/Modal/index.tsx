@@ -4,10 +4,11 @@ interface IModal {
   id: string;
   buttonText: string;
   handleClick: (...args: any[]) => void;
+  shouldDisableButton: boolean;
 }
 
 export const Modal: Component<IModal> = (props) => {
-  const { id, buttonText, children, handleClick } = props;
+  const { id, buttonText, children, shouldDisableButton, handleClick } = props;
 
   return (
     <>
@@ -17,7 +18,13 @@ export const Modal: Component<IModal> = (props) => {
         <label className="modal-box relative" htmlFor="">
           {children}
 
-          <label htmlFor={id} className="btn w-full mt-6" onClick={handleClick}>
+          <label
+            /* @ts-ignore */
+            disabled={shouldDisableButton}
+            htmlFor={id}
+            className="btn w-full mt-6"
+            onClick={handleClick}
+          >
             {buttonText}
           </label>
         </label>
