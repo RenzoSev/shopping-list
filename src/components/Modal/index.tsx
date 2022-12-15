@@ -17,7 +17,7 @@ export const Modal: Component<IModal> = (props) => {
         <label className="modal-box relative" htmlFor="">
           {children}
 
-          <label htmlFor="my-modal" className="btn w-full mt-6" onClick={handleClick}>
+          <label htmlFor={id} className="btn w-full mt-6" onClick={handleClick}>
             {buttonText}
           </label>
         </label>
