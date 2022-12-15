@@ -9,6 +9,8 @@ interface IModalCreateProduct {
   productName: string;
   productLength: string;
 
+  missingFields: boolean;
+
   handleCreateProduct: (...args: any[]) => void;
   handleProductName: (...args: any[]) => void;
   handleProductLength: (...args: any[]) => void;
@@ -24,6 +26,7 @@ export const ModalCreateProduct: Component<IModalCreateProduct> = (props) => {
     handleProductName,
     handleProductLength,
     handleProductCategory,
+    missingFields,
   } = props;
 
   return (
@@ -31,6 +34,7 @@ export const ModalCreateProduct: Component<IModalCreateProduct> = (props) => {
       id={createProductModalId}
       buttonText="Criar"
       handleClick={handleCreateProduct}
+      shouldDisableButton={missingFields}
     >
       <div className="flex flex-col gap-3">
         <TextInput
