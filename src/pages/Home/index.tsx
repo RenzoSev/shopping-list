@@ -36,6 +36,10 @@ export const Home: Component = () => {
     productName
   );
 
+  const missingFields = [productCategory, productLength, productName].some(
+    (item) => !item
+  );
+
   function resetStates() {
     setProductName('');
     setProductLength('');
@@ -63,24 +67,12 @@ export const Home: Component = () => {
   }
 
   function handleCreateProduct() {
-    if (productName) {
-      return;
-    }
-
-    if (productLength) {
-      return;
-    }
-
-    if (productCategory) {
-      return;
-    }
-
     createProduct(createBaseProduct(productToBeCreated, avatar));
     resetStates();
   }
 
   function handleUpdateLessLengthProduct(product: Product) {
-    if (product.length === 1) {
+    if (product.length === 1 || product.length <= 0) {
       handleDeleteProduct(product.id);
       return;
     }
@@ -124,11 +116,12 @@ export const Home: Component = () => {
         <ModalCreateProduct
           createProductModalId={createProductModalId}
           handleCreateProduct={handleCreateProduct}
-          handleProductCategory={handleProductCategory}
           handleProductLength={handleProductLength}
+          handleProductCategory={handleProductCategory}
           handleProductName={handleProductName}
           productLength={productLength}
-          productName={productLength}
+          productName={productName}
+          missingFields={missingFields}
         />
       </section>
     </div>
