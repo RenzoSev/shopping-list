@@ -5,7 +5,6 @@ import { uuid } from '../utils/uuid';
 interface RawProduct {
   name: Product['name'];
   length: Product['length'];
-  description: Product['description'];
   category: Product['category'];
 }
 
@@ -19,5 +18,6 @@ export function createBaseProduct(
     createdBy: avatar.name,
     updatedBy: avatar.name,
     hasBought: false,
+    createdBySrc: avatar.img,
   } as Product;
 }
