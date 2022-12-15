@@ -1,8 +1,10 @@
 import { Component } from '../../types/Component';
 
-interface ITextInput {
-  placeholder: string;
-  value: string;
+type IHTMLTextInput = React.DetailedHTMLProps<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+>;
+interface ITextInput extends IHTMLTextInput {
   handleTextInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: keyof typeof types;
 }
@@ -14,7 +16,7 @@ const types = {
 };
 
 export const TextInput: Component<ITextInput> = (props) => {
-  const { placeholder, value, type: propsType, handleTextInput } = props;
+  const { type: propsType, handleTextInput } = props;
 
   const type = propsType || 'primary';
 
@@ -22,11 +24,10 @@ export const TextInput: Component<ITextInput> = (props) => {
 
   return (
     <input
+      {...props}
       type="text"
       onChange={handleTextInput}
-      placeholder={placeholder}
       className={defaultClassName}
-      value={value}
     />
   );
 };
