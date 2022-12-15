@@ -8,3 +8,14 @@ export function getAvatarFromStorage() {
 
   return avatar as Avatar;
 }
+export function getProductToBeCreated(
+  productCategory: string,
+  productLength: string,
+  productName: string
+) {
+  return {
+    category: productCategory,
+    length: Number(productLength),
+    name: productName,
+  };
+}
